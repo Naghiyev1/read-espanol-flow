@@ -52,6 +52,9 @@ export const getBookText = createServerFn({ method: "GET" })
       `https://www.gutenberg.org/cache/epub/${data.id}/pg${data.id}.txt`,
       `https://www.gutenberg.org/ebooks/${data.id}.txt.utf-8`,
     ];
+    const metaP = fetch(`https://gutendex.com/books/${data.id}`)
+      .then((r) => (r.ok ? (r.json() as Promise<GutendexBook>) : null))
+      .catch(() => null);
     let text = "";
     for (const u of urls) {
       const r = await fetch(u, { redirect: "follow" });
@@ -70,5 +73,6 @@ export const getBookText = createServerFn({ method: "GET" })
       .split(/\n\s*\n/)
       .map((p) => p.replace(/\s*\n\s*/g, " ").replace(/_/g, "").trim())
       .filter((p) => p.length > 0);
-    return { paragraphs };
+    const meta = await metaP;
+    return { paragraphs, meta: meta ? mapBook(meta) : null };
   });
