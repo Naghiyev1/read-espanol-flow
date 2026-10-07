@@ -11,7 +11,7 @@ export type Progress = BookMeta & {
   page: number;
   totalPages: number;
   updatedAt: number;
-  finished?: boolean;
+  finished?: boolean | undefined;
 };
 
 const PROGRESS = "lector.progress";
