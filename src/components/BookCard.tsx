@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
-export function BookCard({ id, title, author, cover, sub }: { id: string; title: string; author: string; cover?: string; sub?: string }) {
+export function BookCard({ id, title, author, cover, sub }: { id: string; title: string; author: string; cover?: string | undefined; sub?: string }) {
   return (
     <Link to="/read/$bookId" params={{ bookId: id }} className="group flex gap-4 rounded-lg border border-border bg-card p-3 transition hover:border-primary">
       <div className="h-24 w-16 shrink-0 overflow-hidden rounded bg-secondary">

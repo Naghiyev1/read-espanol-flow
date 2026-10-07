@@ -7,7 +7,7 @@ export type CatalogBook = {
   author: string;
   summary: string;
   downloads: number;
-  cover?: string;
+  cover?: string | undefined;
 };
 
 type GutendexBook = {

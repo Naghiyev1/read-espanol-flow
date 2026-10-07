@@ -4,7 +4,7 @@ export type BookMeta = {
   key: string; // "g-123" (Gutenberg) or "u-xxxx" (upload)
   title: string;
   author: string;
-  cover?: string;
+  cover?: string | undefined;
 };
 
 export type Progress = BookMeta & {
