@@ -180,7 +180,7 @@ function Reader() {
   );
 }
 
-function Paragraph({ text, activeWord, onPick }: { text: string; activeWord?: string; onPick: (p: Picked) => void }) {
+function Paragraph({ text, activeWord, onPick }: { text: string; activeWord?: string | undefined; onPick: (p: Picked) => void }) {
   const parts = useMemo(() => {
     const out: { t: string; word: boolean; offset: number }[] = [];
     const re = /[\p{L}\p{M}]+/gu;
