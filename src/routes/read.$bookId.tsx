@@ -46,6 +46,7 @@ function Reader() {
   const fetchText = useServerFn(getBookText);
   const [book, setBook] = useState<StoredBook | null>(null);
   const [error, setError] = useState("");
+  const [attempt, setAttempt] = useState(0);
   const [page, setPage] = useState(0);
   const [picked, setPicked] = useState<Picked | null>(null);
   const [size, setSize] = useState(20);
@@ -78,7 +79,7 @@ function Reader() {
       }
     })();
     return () => { alive = false; };
-  }, [bookId, fetchText]);
+  }, [bookId, fetchText, attempt]);
 
   const pages = useMemo(() => (book ? paginate(book.paragraphs) : []), [book]);
 
@@ -119,7 +120,16 @@ function Reader() {
     setFinished(true);
   }
 
-  if (error) return <Centered><p className="text-destructive">{error}</p><Button asChild className="mt-4"><Link to="/library">Back to library</Link></Button></Centered>;
+  if (error) return (
+    <Centered>
+      <p className="text-destructive">{error}</p>
+      <p className="mt-2 text-sm text-muted-foreground">Gutenberg can be slow sometimes — trying again usually works.</p>
+      <div className="mt-4 flex gap-2">
+        {bookId.startsWith("g-") && <Button onClick={() => { setError(""); setAttempt((a) => a + 1); }}>Reintentar</Button>}
+        <Button asChild variant="outline"><Link to="/library">Back to library</Link></Button>
+      </div>
+    </Centered>
+  );
   if (!book) return <Centered><p className="font-display text-xl">Abriendo el libro…</p><p className="mt-2 text-sm text-muted-foreground">The first time can take a few seconds.</p></Centered>;
 
   if (finished) {
