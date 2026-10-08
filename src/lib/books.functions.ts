@@ -123,6 +123,8 @@ export const getBookText = createServerFn({ method: "GET" })
       }
     }
     if (!text) throw new Error("Could not download this book");
+    const headTitle = text.slice(0, 5000).match(/^Title:\s*(.+)$/m)?.[1]?.trim();
+    const headAuthor = text.slice(0, 5000).match(/^Author:\s*(.+)$/m)?.[1]?.trim();
     const start = text.search(/\*\*\* ?START OF (THE|THIS) PROJECT GUTENBERG[^\n]*\n/i);
     if (start >= 0) text = text.slice(text.indexOf("\n", start) + 1);
     const end = text.search(/\*\*\* ?END OF (THE|THIS) PROJECT GUTENBERG/i);
@@ -133,5 +135,8 @@ export const getBookText = createServerFn({ method: "GET" })
       .split(/\n\s*\n/)
       .map((p) => p.replace(/\s*\n\s*/g, " ").replace(/_/g, "").trim())
       .filter((p) => p.length > 0);
-    return { paragraphs, meta: meta ? mapBook(meta) : null };
+    const fallback: CatalogBook | null = headTitle
+      ? { id, title: headTitle, author: headAuthor ?? "Anónimo", summary: "", downloads: 0, cover: `https://www.gutenberg.org/cache/epub/${id}/pg${id}.cover.medium.jpg` }
+      : null;
+    return { paragraphs, meta: meta ? mapBook(meta) : fallback };
   });
